@@ -1,6 +1,6 @@
 from game import Game
+import words
 
 if __name__ == "__main__":
-    print(Game.color_text("a", "green") + Game.color_text("b", "red"))
-    print(Game.generate_correctiveness_string_from_answer("gally", "goall"))
-
+    g = Game(words.get_words_list(5, 6), 5)
+    g.play()

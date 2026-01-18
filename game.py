@@ -89,7 +89,7 @@ class Game:
         return colored_string
 
     @classmethod
-    def generate_correctiveness_string_from_answer(cls, entered_word: str, correct_word: str) -> str:
+    def __generate_correctiveness_string_from_answer(cls, entered_word: str, correct_word: str) -> str:
         split_entered_word: list[str] = list(entered_word)
         split_correct_word: list[str] = list(correct_word)
 
@@ -115,15 +115,38 @@ class Game:
         return Game.__generate_colored_text_return_string_from_list_helper(split_entered_word, correctiveness_list)
 
     def __ask_to_input_word(self, letters: int) -> str:
-        valid = False
+        valid: bool = False
         word = ""
         while not valid:
             word = input("Enter a word to guess:\n")
-            if word in self.__words and len(word.split()) == letters:
-                valid = True
-            else:
+            if word not in self.__words:
                 print(f"{word} is not a valid word. Please try again and...")
+            elif len(word) != letters:
+                print(f"{word} is not {letters} letters. Please try again and...")
+            else:
+                valid = True
         return word
+
+    def play(self):
+        correct_word: str = Game.pick_word(self.__words)
+        letter_count: int = len(correct_word)
+        print(f"The correct word is {letter_count} letters.")
+        running: bool = True
+        attempts: int = 0
+        while running:
+            entered_word: str = self.__ask_to_input_word(letter_count).strip().lower()
+            return_str: str = Game.__generate_correctiveness_string_from_answer(entered_word, correct_word)
+            attempts += 1
+            print(return_str)
+            if entered_word == correct_word:
+                print()
+                print(Game.color_text("You win!", "green"))
+                running = False
+            if attempts == self.__attempts:
+                print()
+                print(Game.color_text("You lost!", "red"))
+                print(f"The correct word was {Game.color_text(correct_word, 'yellow')}")
+                running = False
 
 
 
