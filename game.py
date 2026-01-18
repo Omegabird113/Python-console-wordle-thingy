@@ -80,9 +80,9 @@ class Game:
         for ind, char in enumerate(char_list):
             if correctness_list[ind] == "here":
                 colored_string += Game.color_text(char, "green")
-            if correctness_list[ind] == "other":
+            elif correctness_list[ind] == "other":
                 colored_string += Game.color_text(char, "yellow")
-            if correctness_list[ind] == "not":
+            elif correctness_list[ind] == "not":
                 colored_string += Game.color_text(char, "red")
             else:
                 colored_string += char
@@ -90,22 +90,27 @@ class Game:
 
     @classmethod
     def generate_correctiveness_string_from_answer(cls, entered_word: str, correct_word: str) -> str:
-        split_entered_word: list[str] = entered_word.split()
-        split_correct_word: list[str] = correct_word.split()
+        split_entered_word: list[str] = list(entered_word)
+        split_correct_word: list[str] = list(correct_word)
 
         correctiveness_list: list[str] = []
         uses: dict[str, int] = {
-            "a": 0, "b": 0, "c": 0, "d": 0, "e": 0, "f": 0, "g": 0, "h": 0
+            "a": 0, "b": 0, "c": 0, "d": 0, "e": 0, "f": 0, "g": 0, "h": 0, "i": 0, "j": 0, "k": 0, "l": 0, "m": 0, "o": 0, "p": 0, "q": 0, "r": 0, "s": 0, "t": 0, "u": 0, "v": 0, "w": 0, "x": 0, "y": 0, "z": 0
         }
 
         for ind, char in enumerate(split_entered_word):
             if char == split_correct_word[ind]:
-                correctiveness_list[ind] = "here"
-            elif char in correct_word and correct_word.count(char) > uses[char]:
+                correctiveness_list.append("here")
                 uses[char] += 1
-                correctiveness_list[ind] = "other"
             else:
-                correctiveness_list[ind] = "not"
+                correctiveness_list.append("not")
+
+        for ind, char in enumerate(split_entered_word):
+            if char == split_correct_word[ind]:
+                continue
+            elif char in correct_word and correct_word.count(char) > uses[char]:
+              uses[char] += 1
+              correctiveness_list[ind] = "other"
 
         return Game.__generate_colored_text_return_string_from_list_helper(split_entered_word, correctiveness_list)
 
