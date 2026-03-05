@@ -120,7 +120,8 @@ class Game:
         while not valid:
             word = input("Enter a word to guess:\n")
             if word not in self.__words:
-                print(f"{word} is not a valid word. Please try again and...")
+                print(f"{word} isn't an actual word that it could, but it'll still count...")
+                valid = True
             elif len(word) != letters:
                 print(f"{word} is not {letters} letters. Please try again and...")
             else:
