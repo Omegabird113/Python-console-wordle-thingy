@@ -13,18 +13,20 @@ class Game:
 
     @classmethod
     def __validate_words_list(cls, words: list[str]) -> bool:
-        if type(words) != list:
+        if not isinstance(words, list):
             return False
         is_all_strs: bool = True
         for i in words:
-            if type(i) != str:
+            if not isinstance(i, str):
                 is_all_strs = False
         return is_all_strs
 
     @classmethod
     def __validate_attempts(cls, attempts: int) -> bool:
-        if not type(attempts): return False
-        if attempts < 1: return False
+        if not isinstance(attempts, int):
+            return False
+        if attempts < 1:
+            return False
         return True
 
     @classmethod
@@ -75,7 +77,7 @@ class Game:
             raise ValueError("Invalid color")
 
     @classmethod
-    def __generate_colored_text_return_string_from_list_helper(cls, char_list: list[str], correctness_list: list[str]):
+    def __get_correctiveness_string(cls, char_list: list[str], correctness_list: list[str]):
         colored_string: str = ""
         for ind, char in enumerate(char_list):
             if correctness_list[ind] == "here":
@@ -89,14 +91,12 @@ class Game:
         return colored_string
 
     @classmethod
-    def __generate_correctiveness_string_from_answer(cls, entered_word: str, correct_word: str) -> str:
+    def __get_result_string(cls, entered_word: str, correct_word: str) -> str:
         split_entered_word: list[str] = list(entered_word)
         split_correct_word: list[str] = list(correct_word)
 
         correctiveness_list: list[str] = []
-        uses: dict[str, int] = {
-            "a": 0, "b": 0, "c": 0, "d": 0, "e": 0, "f": 0, "g": 0, "h": 0, "i": 0, "j": 0, "k": 0, "l": 0, "m": 0, "o": 0, "p": 0, "q": 0, "r": 0, "s": 0, "t": 0, "u": 0, "v": 0, "w": 0, "x": 0, "y": 0, "z": 0
-        }
+        uses: dict[str, int] = {char: 0 for char in "abcdefghijklmnopqrstuvwxyz"}
 
         for ind, char in enumerate(split_entered_word):
             if char == split_correct_word[ind]:
@@ -112,7 +112,7 @@ class Game:
               uses[char] += 1
               correctiveness_list[ind] = "other"
 
-        return Game.__generate_colored_text_return_string_from_list_helper(split_entered_word, correctiveness_list)
+        return Game.__get_correctiveness_string(split_entered_word, correctiveness_list)
 
     def __ask_to_input_word(self, letters: int) -> str:
         valid: bool = False
@@ -135,19 +135,15 @@ class Game:
         attempts: int = 0
         while running:
             entered_word: str = self.__ask_to_input_word(letter_count).strip().lower()
-            return_str: str = Game.__generate_correctiveness_string_from_answer(entered_word, correct_word)
+            return_str: str = Game.__get_result_string(entered_word, correct_word)
             attempts += 1
             print(return_str)
             if entered_word == correct_word:
                 print()
                 print(Game.color_text("You win!", "green"))
                 running = False
-            if attempts == self.__attempts:
+            elif attempts >= self.__attempts:
                 print()
                 print(Game.color_text("You lost!", "red"))
                 print(f"The correct word was {Game.color_text(correct_word, 'yellow')}")
                 running = False
-
-
-
-
