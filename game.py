@@ -15,11 +15,9 @@ class Game:
     def __validate_words_list(cls, words: list[str]) -> bool:
         if not isinstance(words, list):
             return False
-        is_all_strs: bool = True
-        for i in words:
-            if not isinstance(i, str):
-                is_all_strs = False
-        return is_all_strs
+        if len(words) < 1:
+            return False
+        return all(isinstance(i, str) for i in words)
 
     @classmethod
     def __validate_attempts(cls, attempts: int) -> bool:
@@ -57,22 +55,19 @@ class Game:
 
     @classmethod
     def color_text(cls, text: str, color: str) -> str:
-        if color == "green":
-            return "\033[92m{}\033[00m".format(text)
-        elif color == "yellow":
-            return "\033[93m{}\033[00m".format(text)
-        elif color == "red":
-            return "\033[91m{}\033[00m".format(text)
-        elif color == "light purple":
-            return "\033[94m{}\033[00m".format(text)
-        elif color == "purple":
-            return "\033[95m{}\033[00m".format(text)
-        elif color == "cyan":
-            return "\033[96m{}\033[00m".format(text)
-        elif color == "light gray":
-            return "\033[97m{}\033[00m".format(text)
-        elif color == "black":
-            return "\033[97m{}\033[00m".format(text)
+        colors: dict[str, str] = {
+            "green": "\033[92m{}\033[00m,",
+            "yellow": "\033[93m{}\033[00m,",
+            "red": "\033[91m{}\033[00m,",
+            "light purple": "\033[94m{}\033[00m,",
+            "purple": "\033[95m{}\033[00m,",
+            "cyan": "\033[96m{}\033[00m",
+            "light gray": "\033[97m{}\033[00m",
+            "black": "\033[90m{}\033[00m",
+        }
+        if color in colors:
+            color_value: str = colors[color]
+            return color_value.format(text)
         else:
             raise ValueError("Invalid color")
 
@@ -119,11 +114,11 @@ class Game:
         word = ""
         while not valid:
             word = input("Enter a word to guess:\n")
-            if word not in self.__words:
-                print(f"{word} isn't an actual word that it could, but it'll still count...")
+            if len(word) != letters:
+                print(f"{word} is not {letters} letters. Please try again.")
+            elif word not in self.__words:
+                print(f"{word} isn't in the word list, but it'll still count...")
                 valid = True
-            elif len(word) != letters:
-                print(f"{word} is not {letters} letters. Please try again and...")
             else:
                 valid = True
         return word
