@@ -6,7 +6,7 @@ class Game:
             raise ValueError("Invalid words list")
 
         if not Game.__validate_attempts(attempts):
-            raise ValueError("Invalid attempts value")
+            raise ValueError("Invalid mumber or value of attempts")
 
         self.__words = words_list
         self.__attempts = attempts
@@ -36,7 +36,7 @@ class Game:
         return self.__words
 
     @words_list.setter
-    def words_list(self, words: list[str]):
+    def words_list(self, words: list[str]) -> None:
         if not Game.__validate_words_list(words):
             raise ValueError("Invalid words list")
 
@@ -47,14 +47,15 @@ class Game:
         return self.__attempts
 
     @attempts.setter
-    def attempts(self, attempts: int):
+    def attempts(self, attempts: int) -> None:
         if not Game.__validate_attempts(attempts):
-            raise ValueError("Invalid attempts value")
+            raise ValueError("Invalid number or value of attempts")
 
         self.__attempts = attempts
 
     @classmethod
     def color_text(cls, text: str, color: str) -> str:
+        color: str = color.lower().strip()
         colors: dict[str, str] = {
             "green": "\033[92m{}\033[00m,",
             "yellow": "\033[93m{}\033[00m,",
@@ -69,10 +70,10 @@ class Game:
             color_value: str = colors[color]
             return color_value.format(text)
         else:
-            raise ValueError("Invalid color")
+            raise ValueError("Invalid color code")
 
     @classmethod
-    def __get_correctiveness_string(cls, char_list: list[str], correctness_list: list[str]):
+    def __get_correctiveness_string(cls, char_list: list[str], correctness_list: list[str]) -> str:
         colored_string: str = ""
         for ind, char in enumerate(char_list):
             if correctness_list[ind] == "here":
@@ -111,7 +112,7 @@ class Game:
 
     def __ask_to_input_word(self, letters: int) -> str:
         valid: bool = False
-        word = ""
+        word: str = ""
         while not valid:
             word = input("Enter a word to guess:\n")
             if len(word) != letters:
@@ -120,10 +121,10 @@ class Game:
                 print(f"{word} isn't in the word list, but it'll still count...")
                 valid = True
             else:
-                valid = True
+                valid: bool = True
         return word
 
-    def play(self):
+    def play(self) -> None:
         correct_word: str = Game.pick_word(self.__words)
         letter_count: int = len(correct_word)
         print(f"The correct word is {letter_count} letters.")
